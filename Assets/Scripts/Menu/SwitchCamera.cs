@@ -32,7 +32,7 @@ public class SwitchCamera : MonoBehaviour
             kldText.SetActive(false);
             dofText.SetActive(true);
             kld = false;
-            text.text = "¥¨";
+            text.text = "Ship";
         }
         else
         {
@@ -41,7 +41,7 @@ public class SwitchCamera : MonoBehaviour
             kldText.SetActive(true);
             dofText.SetActive(false);
             kld = true;
-            text.text = "øÀ¡Óµı";
+            text.text = "Crane";
         }
     }
 }
