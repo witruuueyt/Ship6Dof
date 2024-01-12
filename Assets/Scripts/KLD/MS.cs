@@ -79,5 +79,6 @@ public class MS : MonoBehaviour
 
         // 应用新的旋转
         transform.rotation = newRotation;
+
     }
 }

@@ -14,6 +14,7 @@ public class Ship6DoF : MonoBehaviour
     private string yRotation;
     private string zRotation;
 
+    public Transform msXRotation;
     //public TMP_Text text;
     //public TMP_Text text2;
     //public Transform targetObjectTransform;
@@ -169,6 +170,9 @@ public class Ship6DoF : MonoBehaviour
             Vector3 position = new(ParseStringToFloat(xPosition), ParseStringToFloat(yPosition), ParseStringToFloat(zPosition));
             Vector3 rotation = new(ParseStringToFloat(xRotation), ParseStringToFloat(yRotation), ParseStringToFloat(zRotation));
 
+            // 将物体的 X 轴旋转设置为 0
+            SetXRotationToZero(msXRotation.transform);
+
             //if (targetObjectTransform != null)
             //{
             //    //targetObjectTransform.position = position;
@@ -178,7 +182,7 @@ public class Ship6DoF : MonoBehaviour
             //{
             //    Debug.LogError("Target object transform is not assigned!");
             //}
-            
+
             transform.SetPositionAndRotation(position, Quaternion.Euler(rotation));
         }
     }
@@ -188,5 +192,17 @@ public class Ship6DoF : MonoBehaviour
         float result = 0f;
         float.TryParse(value, out result);
         return result;
+    }
+
+    void SetXRotationToZero(Transform targetTransform)
+    {
+        // 获取当前的旋转
+        Quaternion currentRotation = targetTransform.rotation;
+
+        // 将 X 轴旋转设置为 0
+        Quaternion newRotation = Quaternion.Euler(-90f, currentRotation.eulerAngles.y, currentRotation.eulerAngles.z);
+
+        // 应用新的旋转
+        targetTransform.rotation = newRotation;
     }
 }
