@@ -950,7 +950,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 579938860}
         m_TargetAssemblyTypeName: test, Assembly-CSharp
-        m_MethodName: writeValue
+        m_MethodName: WriteValue
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1546,6 +1546,7 @@ GameObject:
   - component: {fileID: 579938859}
   - component: {fileID: 579938858}
   - component: {fileID: 579938857}
+  - component: {fileID: 579938861}
   - component: {fileID: 579938856}
   - component: {fileID: 579938860}
   m_Layer: 0
@@ -1682,13 +1683,45 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 148a8654ec84f5642a7e1d20bff961a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  factoryMachineID: Cube
+  maxRotationSpeed: 100
+  accelerationRate: 5
+  decelerationRate: 10
+  factoryMachineID: TestCube
   Interface: {fileID: 658140139}
   nodeBeingMonitored: RX
   nodeID: ns=1;s=Driver_01.Ship.RX
   uiFeedbackTMP: {fileID: 1259583214}
   dataFromOPCUANode: 
   angleInDegrees: 0
+  moveID: 
+  moveData: 
+--- !u!54 &579938861
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 579938854}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &587296183
 GameObject:
   m_ObjectHideFlags: 0
@@ -2284,7 +2317,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &658140138
 Transform:
   m_ObjectHideFlags: 0
@@ -5210,6 +5243,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 148a8654ec84f5642a7e1d20bff961a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxRotationSpeed: 100
+  accelerationRate: 5
+  decelerationRate: 10
   factoryMachineID: 
   Interface: {fileID: 0}
   nodeBeingMonitored: 
@@ -5217,6 +5253,8 @@ MonoBehaviour:
   uiFeedbackTMP: {fileID: 0}
   dataFromOPCUANode: 
   angleInDegrees: 0
+  moveID: 
+  moveData: 
 --- !u!1 &1481960738
 GameObject:
   m_ObjectHideFlags: 0
@@ -6132,9 +6170,9 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 4111795847866682055}
   - {fileID: 2777561612569005973}
   - {fileID: 2101034668997783568}
-  - {fileID: 4111795847866682055}
   m_Father: {fileID: 5958482808702866326}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1841011826
@@ -17668,7 +17706,7 @@ ConfigurableJoint:
   m_Anchor: {x: 0, y: 0, z: -1}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: -0.000082483726, y: 0.00015433878, z: -0.018000122}
+  m_ConnectedAnchor: {x: -0.0000793936, y: 0.00015210733, z: -0.01799893}
   serializedVersion: 3
   m_SecondaryAxis: {x: 0, y: 1, z: 0}
   m_XMotion: 2
@@ -18757,7 +18795,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &3916088190043746287
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19467,7 +19505,7 @@ Transform:
   m_GameObject: {fileID: 2264431813289268917}
   serializedVersion: 2
   m_LocalRotation: {x: 0.000000036521747, y: 0.7071068, z: 0.000000080858385, w: 0.70710677}
-  m_LocalPosition: {x: 0.032599926, y: -0, z: -8.659555}
+  m_LocalPosition: {x: 0.032599926, y: 0, z: -8.659555}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -21514,7 +21552,7 @@ ConfigurableJoint:
   m_Anchor: {x: 0, y: 0.45, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: 0.003011429, y: 0.0009035226, z: -0.017998658}
+  m_ConnectedAnchor: {x: 0.003009346, y: 0.00090268813, z: -0.017999254}
   serializedVersion: 3
   m_SecondaryAxis: {x: 0, y: 1, z: 0}
   m_XMotion: 0
@@ -32494,7 +32532,7 @@ ConfigurableJoint:
   m_Anchor: {x: 0, y: 0.054769326, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: -0.11093595, y: 0.26004794, z: 0.09231868}
+  m_ConnectedAnchor: {x: 0.000780385, y: 0.08707148, z: 0.09231875}
   serializedVersion: 3
   m_SecondaryAxis: {x: 0, y: 1, z: 0}
   m_XMotion: 0
@@ -33225,7 +33263,7 @@ ConfigurableJoint:
   m_Anchor: {x: 0, y: 0, z: -0.25}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: -0.0000013586075, y: -0.000011516735, z: -0.043621764}
+  m_ConnectedAnchor: {x: 0.0000015322179, y: -0.000012565404, z: -0.043623373}
   serializedVersion: 3
   m_SecondaryAxis: {x: 0, y: 1, z: 0}
   m_XMotion: 0
