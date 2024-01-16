@@ -1689,7 +1689,7 @@ MonoBehaviour:
   factoryMachineID: TestCube
   Interface: {fileID: 658140139}
   nodeBeingMonitored: RX
-  nodeID: ns=1;s=Driver_01.Ship.RX
+  nodeID: ns=1;s=Driver_01.Ship.RZ
   uiFeedbackTMP: {fileID: 1259583214}
   dataFromOPCUANode: 
   angleInDegrees: 0
@@ -2317,7 +2317,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &658140138
 Transform:
   m_ObjectHideFlags: 0
@@ -4034,12 +4034,12 @@ GameObject:
   m_Component:
   - component: {fileID: 996632556}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: Test
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &996632556
 Transform:
   m_ObjectHideFlags: 0
@@ -10460,8 +10460,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 788414770300148338}
   - {fileID: 6306699157961998345}
+  - {fileID: 788414770300148338}
   m_Father: {fileID: 8553481025160435719}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &1182961974995675527
@@ -12335,6 +12335,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff42f5d90b268cd4b8399bd3e379bd34, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxRotationSpeed: 100
+  accelerationRate: 1000
+  decelerationRate: 1000
   factoryMachineID: ML
   Interface: {fileID: 658140139}
   nodeBeingMonitored: 
@@ -12342,6 +12345,8 @@ MonoBehaviour:
   uiFeedbackTMP: {fileID: 706440136}
   dataFromOPCUANode: 
   angleInDegrees: 0
+  moveNodeID: 
+  moveData: 
 --- !u!4 &1854875009883545310
 Transform:
   m_ObjectHideFlags: 0
@@ -13683,12 +13688,12 @@ Transform:
   m_Children:
   - {fileID: 8919727809544656197}
   - {fileID: 7036483143161608415}
+  - {fileID: 4043704270087634544}
   - {fileID: 5965880082708031904}
   - {fileID: 763593813981352434}
   - {fileID: 3962027523765277819}
   - {fileID: 392418411297552726}
   - {fileID: 2235704663254058412}
-  - {fileID: 4043704270087634544}
   - {fileID: 6867804438653690744}
   m_Father: {fileID: 8794369468456076372}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -14026,13 +14031,19 @@ MonoBehaviour:
   partB: {fileID: 300998883740891699}
   partC: {fileID: 5958482808702866326}
   uiFeedbackTMP: {fileID: 1260718854}
-  stopThreshold: 5
+  maxTranslationSpeed: 100
+  accelerationRate: 200
+  decelerationRate: 200
+  maxDistance: 5.7
+  currentTranslationSpeed: 0
   factoryMachineID: MT
   Interface: {fileID: 658140139}
   nodeBeingMonitored: MT
   nodeID: ns=1;s=Driver_01.Device_01.MT_Position
   dataFromOPCUANode: 
   fixedData: 0
+  moveNodeID: 
+  moveData: 
 --- !u!1 &2373709585212398642
 GameObject:
   m_ObjectHideFlags: 0
@@ -18795,7 +18806,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &3916088190043746287
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -24640,6 +24651,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b38ac412f9a02d43ab6b65390247592, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxRotationSpeed: 100
+  accelerationRate: 1000
+  decelerationRate: 1000
   factoryMachineID: MS
   Interface: {fileID: 658140139}
   nodeBeingMonitored: 
@@ -24647,6 +24661,8 @@ MonoBehaviour:
   uiFeedbackTMP: {fileID: 1646931429}
   dataFromOPCUANode: 
   angleInDegrees: 0
+  moveNodeID: 
+  moveData: 
 --- !u!33 &5721189236312780463
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -27652,6 +27668,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b2863b7219b13e4db189ce6b9230f4b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxRotationSpeed: 100
+  accelerationRate: 1000
+  decelerationRate: 1000
+  currentRotationSpeed: 0
   factoryMachineID: TS
   Interface: {fileID: 658140139}
   nodeBeingMonitored: 
@@ -27659,6 +27679,8 @@ MonoBehaviour:
   uiFeedbackTMP: {fileID: 1369652037}
   dataFromOPCUANode: 
   angleInDegrees: 0
+  moveNodeID: 
+  moveData: 
 --- !u!4 &6748747782798300524
 Transform:
   m_ObjectHideFlags: 0
@@ -31636,6 +31658,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c680411a86f260f4880575a3132b3e37, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxRotationSpeed: 100
+  accelerationRate: 1000
+  decelerationRate: 1000
   factoryMachineID: TL
   Interface: {fileID: 658140139}
   nodeBeingMonitored: 
@@ -31643,6 +31668,8 @@ MonoBehaviour:
   uiFeedbackTMP: {fileID: 2127201365}
   dataFromOPCUANode: 
   angleInDegrees: 0
+  moveNodeID: 
+  moveData: 
 --- !u!4 &8177402434393527223
 Transform:
   m_ObjectHideFlags: 0

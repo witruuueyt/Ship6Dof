@@ -9,7 +9,17 @@ public class MT : MonoBehaviour
     public Transform partC;
     public TMP_Text uiFeedbackTMP;
 
-    public float stopThreshold = 5f;
+    //public float stopThreshold = 5f;
+
+    public float maxTranslationSpeed = 100f;
+    public float accelerationRate = 200f;
+    public float decelerationRate = 200f;
+    public float maxDistance;
+    private Transform myTransform;
+    float zPosition;
+    [SerializeField]
+    private float currentTranslationSpeed = 0f;
+    private Vector3 initialPositionB;
 
     //private bool bStopped = false;
     //private Vector3 lastBPosition; // 保存B的最后位置
@@ -26,6 +36,8 @@ public class MT : MonoBehaviour
 
     public string dataFromOPCUANode;
     public float fixedData;
+    public string moveNodeID;
+    public string moveData;
 
 
     void Start()
@@ -34,9 +46,8 @@ public class MT : MonoBehaviour
         Interface.EventOnConnected.AddListener(OnInterfaceDisconnected);
         Interface.EventOnConnected.AddListener(OnInterfaceReconnect);
         InvokeRepeating("UpdateData", 0f, 0.1f);
-
-
-
+        myTransform = GetComponent<Transform>();
+        initialPositionB = partB.transform.position;
     }
 
 
@@ -45,9 +56,8 @@ public class MT : MonoBehaviour
         Debug.LogWarning("Connected to Factory Machine " + factoryMachineID);
         var subscription = Interface.Subscribe(nodeID, NodeChanged);
         dataFromOPCUANode = subscription.ToString();
-        Debug.LogError(dataFromOPCUANode);
-        //digitalTwinRFIDFeedbackTMP.text = RFIDInfo;
-        //uiRFIDFeedbackTMP.text = RFIDInfo;        
+        var subscriptionMove = Interface.Subscribe(moveNodeID, MoveNodeChanged);
+        moveData = subscription.ToString();
     }
 
     private void OnInterfaceDisconnected()
@@ -66,9 +76,16 @@ public class MT : MonoBehaviour
         Debug.Log("Factory machine " + factoryMachineID + " just registered " + nodeBeingMonitored + " as " + dataFromOPCUANode);
     }
 
+    public void MoveNodeChanged(OPCUANodeSubscription sub, object value)
+    {
+        moveData = value.ToString();
+        Debug.Log("Factory machine " + factoryMachineID + " just registered " + nodeBeingMonitored + " as " + dataFromOPCUANode);
+    }
 
     void UpdateData()
-    { 
+    {
+        Move();
+        WriteValue();
         uiFeedbackTMP.text = factoryMachineID + ":" + dataFromOPCUANode;
         if (float.TryParse(dataFromOPCUANode, out float parsedData))
         {
@@ -82,12 +99,56 @@ public class MT : MonoBehaviour
     }
     void UpdatePosition(float displacement)
     {
-        // 通过位移值更新B的位置
-        partB.localPosition = new Vector3(partB.localPosition.x, partB.localPosition.y, displacement);
 
+        if (moveData.Equals("1"))
+        {
+
+        }
+
+        else
+        {
+            // 通过位移值更新B的位置
+            partB.localPosition = new Vector3(partB.localPosition.x, partB.localPosition.y, displacement);
+        }
     }
 
+    public void WriteValue()
+    {
+        zPosition = transform.position.z * -1;
 
+        Interface.WriteNodeValue(nodeID, zPosition);
+        //Debug.Log(nodeID + dataFromOPCUANode);
+    }
+
+    public void Move()
+    {
+        //接收到的moveData数值为1时，开始移动
+        if (moveData.Equals("1"))
+        {
+            //加速度
+            currentTranslationSpeed = Mathf.MoveTowards(currentTranslationSpeed, maxTranslationSpeed, accelerationRate * Time.deltaTime);
+
+            // 沿Z轴平移
+            partB.transform.Translate(Vector3.forward * currentTranslationSpeed * Time.deltaTime * -1);
+
+            // 检查是否达到最大距离，如果达到，则立即停止
+            if (Mathf.Abs((partB.transform.position.z - initialPositionB.z)*-1) >= maxDistance)
+            {
+                currentTranslationSpeed = 0f;
+                accelerationRate = 0f;
+            }
+        }
+        else
+        {
+            // 减速
+            currentTranslationSpeed = Mathf.MoveTowards(currentTranslationSpeed, 0f, decelerationRate * Time.deltaTime);
+
+            // 沿Z轴平移
+            partB.transform.Translate(Vector3.forward * currentTranslationSpeed * Time.deltaTime * -1);
+        }
+    }
+
+}
     //void UpdateData()
     //{
     //    if (float.TryParse(dataFromOPCUANode, out float parsedData))
@@ -148,5 +209,5 @@ public class MT : MonoBehaviour
     //}
 
 
-}
+
 

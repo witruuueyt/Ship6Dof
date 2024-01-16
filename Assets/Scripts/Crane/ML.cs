@@ -4,7 +4,13 @@ using TMPro;
 
 public class ML : MonoBehaviour
 {
+    public float maxRotationSpeed = 100f;
+    public float accelerationRate = 5f;
+    public float decelerationRate = 10f;
+    private float currentRotationSpeed = 0f;
+    private Transform myTransform;
 
+    float zRotation;
     //private float refreshInterval = 0.1f;
     //private float timeSinceLastRefresh = 0f;
     //Transform objectTransform;
@@ -22,7 +28,8 @@ public class ML : MonoBehaviour
     public TMP_Text uiFeedbackTMP;
     public string dataFromOPCUANode;
     public float angleInDegrees;
-
+    public string moveNodeID;
+    public string moveData;
 
     void Start()
     {
@@ -38,9 +45,8 @@ public class ML : MonoBehaviour
         Debug.LogWarning("Connected to Factory Machine " + factoryMachineID);
         var subscription = Interface.Subscribe(nodeID, NodeChanged);
         dataFromOPCUANode = subscription.ToString();
-        //Debug.LogError(dataFromOPCUANode);
-        //digitalTwinRFIDFeedbackTMP.text = RFIDInfo;
-        //uiRFIDFeedbackTMP.text = RFIDInfo;        
+        var subscriptionMove = Interface.Subscribe(moveNodeID, MoveNodeChanged);
+        moveData = subscription.ToString();
     }
 
     private void OnInterfaceDisconnected()
@@ -59,9 +65,16 @@ public class ML : MonoBehaviour
         Debug.Log("Factory machine " + factoryMachineID + " just registered " + nodeBeingMonitored + " as " + dataFromOPCUANode);
     }
 
+    public void MoveNodeChanged(OPCUANodeSubscription sub, object value)
+    {
+        moveData = value.ToString();
+        Debug.Log("Factory machine " + factoryMachineID + " just registered " + nodeBeingMonitored + " as " + dataFromOPCUANode);
+    }
 
     void UpdateData()
     {
+        Spin();
+        WriteValue();
         uiFeedbackTMP.text = factoryMachineID + ":" + dataFromOPCUANode;
         if (float.TryParse(dataFromOPCUANode, out float parsedData))
         {
@@ -78,13 +91,53 @@ public class ML : MonoBehaviour
     }
     void RotateObjectOnZ(float angle)
     {
-        // 获取当前物体的欧拉角
-        Vector3 currentRotation = transform.eulerAngles;
+        if (moveData.Equals("1"))
+        {
 
-        // 设置新的Z轴角度
-        currentRotation.z = angle;
+        }
+        else
+        {
 
-        // 应用新的欧拉角，旋转物体
-        transform.eulerAngles = currentRotation;
+            // 获取当前物体的欧拉角
+            Vector3 currentRotation = transform.eulerAngles;
+
+            // 设置新的Z轴角度
+            currentRotation.z = angle;
+
+            // 应用新的欧拉角，旋转物体
+            transform.eulerAngles = currentRotation;
+        }
+    }
+
+    public void WriteValue()
+    {
+
+        zRotation = transform.eulerAngles.z;
+
+        Interface.WriteNodeValue(nodeID, zRotation);
+        //Debug.Log(nodeID + dataFromOPCUANode);
+    }
+
+    public void Spin()
+    {
+        //接收到的moveData数值为1时，开始旋转
+        if (moveData.Equals("1"))
+        {
+            //加速度
+            currentRotationSpeed = Mathf.MoveTowards(currentRotationSpeed, maxRotationSpeed, accelerationRate * Time.deltaTime);
+
+
+            transform.Rotate(Vector3.forward, currentRotationSpeed * Time.deltaTime);
+
+        }
+
+        else
+        {
+            // 减速
+            currentRotationSpeed = Mathf.MoveTowards(currentRotationSpeed, 0f, decelerationRate * Time.deltaTime);
+
+
+            transform.Rotate(Vector3.forward, currentRotationSpeed * Time.deltaTime);
+        }
     }
 }

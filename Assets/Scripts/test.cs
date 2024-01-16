@@ -15,7 +15,7 @@ public class test : MonoBehaviour
     private Transform myTransform;
 
 
-    private bool shouldRotate = false;
+    //private bool shouldRotate = false;
     private float currentRotationSpeed = 0f;
 
     //[SerializeField]
@@ -126,6 +126,7 @@ public class test : MonoBehaviour
         
     }
 
+   
     public void WriteValue()
     {
         float zRotation = transform.eulerAngles.z;
@@ -142,7 +143,7 @@ public class test : MonoBehaviour
             //加速度
             currentRotationSpeed = Mathf.MoveTowards(currentRotationSpeed, maxRotationSpeed, accelerationRate * Time.deltaTime);
 
-            // 绕X轴旋转
+            // 绕Z轴旋转
             transform.Rotate(Vector3.forward, currentRotationSpeed * Time.deltaTime);
 
         }
@@ -153,7 +154,7 @@ public class test : MonoBehaviour
             // 减速
             currentRotationSpeed = Mathf.MoveTowards(currentRotationSpeed, 0f, decelerationRate * Time.deltaTime);
 
-            // 绕X轴旋转
+            // 绕Z轴旋转
             transform.Rotate(Vector3.forward, currentRotationSpeed * Time.deltaTime);
         }
     }
