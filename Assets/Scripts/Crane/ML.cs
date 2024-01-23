@@ -127,7 +127,7 @@ public class ML : MonoBehaviour
             currentRotationSpeed = Mathf.MoveTowards(currentRotationSpeed, maxRotationSpeed, accelerationRate * Time.deltaTime);
 
 
-            transform.Rotate(Vector3.forward, currentRotationSpeed * Time.deltaTime);
+            transform.Rotate(Vector3.right, currentRotationSpeed * Time.deltaTime);
 
         }
 
@@ -137,7 +137,7 @@ public class ML : MonoBehaviour
             currentRotationSpeed = Mathf.MoveTowards(currentRotationSpeed, 0f, decelerationRate * Time.deltaTime);
 
 
-            transform.Rotate(Vector3.forward, currentRotationSpeed * Time.deltaTime);
+            transform.Rotate(Vector3.right, currentRotationSpeed * Time.deltaTime);
         }
     }
 }
