@@ -1,20 +1,24 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Test2 : MonoBehaviour
 {
-    public Transform targetObject;
-
-    void Update()
+    void Start()
     {
-        if (targetObject != null)
-        {
-            // 模仿目标物体的位置
-            transform.position = targetObject.position;
+        // 获取物体的Mesh Renderer组件
+        MeshRenderer meshRenderer = GetComponent<MeshRenderer>();
 
-            // 模仿目标物体的旋转
-            transform.rotation = targetObject.rotation;
+        if (meshRenderer != null)
+        {
+            // 获取物体在X轴上的长度
+            float objectLengthX = meshRenderer.bounds.size.x;
+            float objectLengthY = meshRenderer.bounds.size.y;
+            float objectLengthZ = meshRenderer.bounds.size.z;
+            // 输出长度
+            Debug.Log("物体在X轴上的长度是：" + objectLengthX + "," + objectLengthY + "," + objectLengthZ);
+        }
+        else
+        {
+            Debug.LogError("物体没有Mesh Renderer组件，无法获取长度。");
         }
     }
 }

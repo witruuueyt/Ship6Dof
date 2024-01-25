@@ -7,10 +7,12 @@ public class ML : MonoBehaviour
     public float maxRotationSpeed = 100f;
     public float accelerationRate = 5f;
     public float decelerationRate = 10f;
+    [SerializeField]
     private float currentRotationSpeed = 0f;
     private Transform myTransform;
 
     float zRotation;
+
     //private float refreshInterval = 0.1f;
     //private float timeSinceLastRefresh = 0f;
     //Transform objectTransform;
@@ -33,7 +35,7 @@ public class ML : MonoBehaviour
 
     void Start()
     {
-        InvokeRepeating("UpdateData", 0f, 0.1f);
+        //InvokeRepeating("UpdateData", 0f, 0.1f);
         Interface.EventOnConnected.AddListener(OnInterfaceConnected);
         Interface.EventOnConnected.AddListener(OnInterfaceDisconnected);
         Interface.EventOnConnected.AddListener(OnInterfaceReconnect);
@@ -71,7 +73,7 @@ public class ML : MonoBehaviour
         Debug.Log("Factory machine " + factoryMachineID + " just registered " + nodeBeingMonitored + " as " + dataFromOPCUANode);
     }
 
-    void UpdateData()
+    void Update()
     {
         Spin();
         WriteValue();
@@ -127,7 +129,7 @@ public class ML : MonoBehaviour
             currentRotationSpeed = Mathf.MoveTowards(currentRotationSpeed, maxRotationSpeed, accelerationRate * Time.deltaTime);
 
 
-            transform.Rotate(Vector3.right, currentRotationSpeed * Time.deltaTime);
+            transform.Rotate(Vector3.forward, currentRotationSpeed * Time.deltaTime);
 
         }
 
@@ -137,7 +139,7 @@ public class ML : MonoBehaviour
             currentRotationSpeed = Mathf.MoveTowards(currentRotationSpeed, 0f, decelerationRate * Time.deltaTime);
 
 
-            transform.Rotate(Vector3.right, currentRotationSpeed * Time.deltaTime);
+            transform.Rotate(Vector3.forward, currentRotationSpeed * Time.deltaTime);
         }
     }
 }

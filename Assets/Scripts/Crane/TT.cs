@@ -39,7 +39,7 @@ public class TT : MonoBehaviour
         Interface.EventOnConnected.AddListener(OnInterfaceConnected);
         Interface.EventOnConnected.AddListener(OnInterfaceDisconnected);
         Interface.EventOnConnected.AddListener(OnInterfaceReconnect);
-        InvokeRepeating("UpdateData", 0f, 0.1f);
+        //InvokeRepeating("UpdateData", 0f, 0.1f);
         myTransform = GetComponent<Transform>();
         initialPositionB = partB.transform.position;
     }
@@ -76,7 +76,7 @@ public class TT : MonoBehaviour
         Debug.Log("Factory machine " + factoryMachineID + " just registered " + nodeBeingMonitored + " as " + dataFromOPCUANode);
     }
 
-    void UpdateData()
+    void Update()
     {
         Move();
         WriteValue();

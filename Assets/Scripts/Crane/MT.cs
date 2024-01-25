@@ -7,6 +7,7 @@ public class MT : MonoBehaviour
     public Transform partA;
     public Transform partB;
     public Transform partC;
+    private float maxLength = 7.5f; // 部件最大长度
     public TMP_Text uiFeedbackTMP;
 
     //public float stopThreshold = 5f;
@@ -45,7 +46,7 @@ public class MT : MonoBehaviour
         Interface.EventOnConnected.AddListener(OnInterfaceConnected);
         Interface.EventOnConnected.AddListener(OnInterfaceDisconnected);
         Interface.EventOnConnected.AddListener(OnInterfaceReconnect);
-        InvokeRepeating("UpdateData", 0f, 0.1f);
+        //InvokeRepeating("UpdateData", 0f, 0.1f);
         myTransform = GetComponent<Transform>();
         initialPositionB = partB.transform.position;
     }
@@ -82,22 +83,22 @@ public class MT : MonoBehaviour
         Debug.Log("Factory machine " + factoryMachineID + " just registered " + nodeBeingMonitored + " as " + dataFromOPCUANode);
     }
 
-    void UpdateData()
+    void Update()
     {
-        Move();
-        WriteValue();
+        //Move();
+        //WriteValue();
         uiFeedbackTMP.text = factoryMachineID + ":" + dataFromOPCUANode;
         if (float.TryParse(dataFromOPCUANode, out float parsedData))
         {
-            fixedData = parsedData / 100f * -1;
-            UpdatePosition(fixedData);
+            fixedData = parsedData / 100f;
+            UpdatePosition();
         }
         else
         {
             //Debug.LogWarning("Failed to parse data from OPC UA node.");
         }
     }
-    void UpdatePosition(float displacement)
+    void UpdatePosition()
     {
 
         if (moveData.Equals("1"))
@@ -107,8 +108,19 @@ public class MT : MonoBehaviour
 
         else
         {
-            // 通过位移值更新B的位置
-            partB.localPosition = new Vector3(partB.localPosition.x, partB.localPosition.y, displacement);
+            // 根据 fixedData 计算每个部件的位置
+            float normalizedPosition = Mathf.Clamp01(Mathf.Abs(fixedData) / maxLength);
+
+            // 更新部件A的位置（始终不变）
+            partA.localPosition = Vector3.zero;
+
+            // 更新部件B的位置
+            float lengthB = Mathf.Min(Mathf.Abs(fixedData), maxLength) * Mathf.Sign(fixedData);
+            partB.localPosition = new Vector3(0, 0, lengthB);
+
+            // 更新部件C的位置
+            float lengthC = Mathf.Max(Mathf.Abs(fixedData) - maxLength, 0) * Mathf.Sign(fixedData);
+            partC.localPosition = new Vector3(0, 0, lengthC);
         }
     }
 
@@ -120,35 +132,36 @@ public class MT : MonoBehaviour
         //Debug.Log(nodeID + dataFromOPCUANode);
     }
 
-    public void Move()
-    {
-        //接收到的moveData数值为1时，开始移动
-        if (moveData.Equals("1"))
-        {
-            //加速度
-            currentTranslationSpeed = Mathf.MoveTowards(currentTranslationSpeed, maxTranslationSpeed, accelerationRate * Time.deltaTime);
+    //public void Move()
+    //{
+    //    //接收到的moveData数值为1时，开始移动
+    //    if (moveData.Equals("1"))
+    //    {
+    //        //加速度
+    //        currentTranslationSpeed = Mathf.MoveTowards(currentTranslationSpeed, maxTranslationSpeed, accelerationRate * Time.deltaTime);
 
-            // 沿Z轴平移
-            partB.transform.Translate(Vector3.forward * currentTranslationSpeed * Time.deltaTime * -1);
+    //        // 沿Z轴平移
+    //        partB.transform.Translate(Vector3.forward * currentTranslationSpeed * Time.deltaTime * -1);
 
-            // 检查是否达到最大距离，如果达到，则立即停止
-            if (Mathf.Abs((partB.transform.position.z - initialPositionB.z)*-1) >= maxDistance)
-            {
-                currentTranslationSpeed = 0f;
-                accelerationRate = 0f;
-            }
-        }
-        else
-        {
-            // 减速
-            currentTranslationSpeed = Mathf.MoveTowards(currentTranslationSpeed, 0f, decelerationRate * Time.deltaTime);
+    //        // 检查是否达到最大距离，如果达到，则立即停止
+    //        if (Mathf.Abs((partB.transform.position.z - initialPositionB.z)*-1) >= maxDistance)
+    //        {
+    //            currentTranslationSpeed = 0f;
+    //            accelerationRate = 0f;
+    //        }
+    //    }
+    //    else
+    //    {
+    //        // 减速
+    //        currentTranslationSpeed = Mathf.MoveTowards(currentTranslationSpeed, 0f, decelerationRate * Time.deltaTime);
 
-            // 沿Z轴平移
-            partB.transform.Translate(Vector3.forward * currentTranslationSpeed * Time.deltaTime * -1);
-        }
-    }
+    //        // 沿Z轴平移
+    //        partB.transform.Translate(Vector3.forward * currentTranslationSpeed * Time.deltaTime * -1);
+    //    }
+    //}
 
 }
+//----------------------------------------------------------
     //void UpdateData()
     //{
     //    if (float.TryParse(dataFromOPCUANode, out float parsedData))

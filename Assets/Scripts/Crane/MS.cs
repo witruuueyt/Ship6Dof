@@ -33,7 +33,7 @@ public class MS : MonoBehaviour
     {
         myTransform = GetComponent<Transform>();
 
-        InvokeRepeating("UpdateData", 0f, 0.1f);
+        //InvokeRepeating("UpdateData", 0f, 0.1f);
         Interface.EventOnConnected.AddListener(OnInterfaceConnected);
         Interface.EventOnConnected.AddListener(OnInterfaceDisconnected);
         Interface.EventOnConnected.AddListener(OnInterfaceReconnect);
@@ -71,7 +71,7 @@ public class MS : MonoBehaviour
         Debug.Log("Factory machine " + factoryMachineID + " just registered " + nodeBeingMonitored + " as " + dataFromOPCUANode);
     }
 
-    void UpdateData()
+    void Update()
     {
         Spin();
         WriteValue();

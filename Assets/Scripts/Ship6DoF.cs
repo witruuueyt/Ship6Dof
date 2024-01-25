@@ -171,7 +171,7 @@ public class Ship6DoF : MonoBehaviour
             Vector3 rotation = new(ParseStringToFloat(xRotation), ParseStringToFloat(yRotation), ParseStringToFloat(zRotation));
 
             // 将物体的 X 轴旋转设置为 0
-            SetXRotationToZero(msXRotation.transform);
+            //SetXRotationToZero(msXRotation.transform);
 
             //if (targetObjectTransform != null)
             //{
