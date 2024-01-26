@@ -5,8 +5,8 @@ using TMPro;
 public class TL : MonoBehaviour
 {
 
-    public float maxRotationSpeed = 100f;
-    public float accelerationRate = 5f;
+    public float maxRotationSpeed = 30f;
+    public float accelerationRate = 10f;
     public float decelerationRate = 10f;
 
     private Transform myTransform;

@@ -4,15 +4,15 @@ using TMPro;
 
 public class TT : MonoBehaviour
 {
-    public Transform partA;
-    public Transform partB;
+    
     public TMP_Text uiFeedbackTMP;
 
 
-    public float maxTranslationSpeed = 100f;
-    public float accelerationRate = 200f;
-    public float decelerationRate = 200f;
-    public float maxDistance;
+    public float maxTranslationSpeed = 30f;
+
+    public float accelerationRate = 10f;
+    public float decelerationRate = 10f;
+    public float maxLength = 6.24f;//5.87f + 0.37f
     private Transform myTransform;
     float zPosition;
     [SerializeField]
@@ -41,7 +41,6 @@ public class TT : MonoBehaviour
         Interface.EventOnConnected.AddListener(OnInterfaceReconnect);
         //InvokeRepeating("UpdateData", 0f, 0.1f);
         myTransform = GetComponent<Transform>();
-        initialPositionB = partB.transform.position;
     }
 
 
@@ -81,9 +80,11 @@ public class TT : MonoBehaviour
         Move();
         WriteValue();
         uiFeedbackTMP.text = factoryMachineID + ":" + dataFromOPCUANode;
+
+
         if (float.TryParse(dataFromOPCUANode, out float parsedData))
         {
-            fixedData = parsedData / 100f * -1;
+            fixedData = (parsedData / 100f * -1) - 0.37f;
             UpdatePosition(fixedData);
         }
         else
@@ -100,8 +101,9 @@ public class TT : MonoBehaviour
 
         else
         {
-            // 通过位移值更新B的位置
-            partB.localPosition = new Vector3(partB.localPosition.x, partB.localPosition.y, displacement);
+            float length = Mathf.Min(Mathf.Abs(displacement), maxLength) * Mathf.Sign(displacement);
+            transform.localPosition = new Vector3(length, -0.004704595f, 0.7641368f);
+
         }
     }
 
@@ -115,30 +117,7 @@ public class TT : MonoBehaviour
 
     public void Move()
     {
-        //接收到的moveData数值为1时，开始移动
-        if (moveData.Equals("1"))
-        {
-            //加速度
-            currentTranslationSpeed = Mathf.MoveTowards(currentTranslationSpeed, maxTranslationSpeed, accelerationRate * Time.deltaTime);
-
-            // 沿Z轴平移
-            partB.transform.Translate(Vector3.forward * currentTranslationSpeed * Time.deltaTime * -1);
-
-            // 检查是否达到最大距离，如果达到，则立即停止
-            if (Mathf.Abs((partB.transform.position.z - initialPositionB.z) * -1) >= maxDistance)
-            {
-                currentTranslationSpeed = 0f;
-                accelerationRate = 0f;
-            }
-        }
-        else
-        {
-            // 减速
-            currentTranslationSpeed = Mathf.MoveTowards(currentTranslationSpeed, 0f, decelerationRate * Time.deltaTime);
-
-            // 沿Z轴平移
-            partB.transform.Translate(Vector3.forward * currentTranslationSpeed * Time.deltaTime * -1);
-        }
+        
     }
 }
 

@@ -12,9 +12,10 @@ public class MT : MonoBehaviour
 
     //public float stopThreshold = 5f;
 
-    public float maxTranslationSpeed = 100f;
-    public float accelerationRate = 200f;
-    public float decelerationRate = 200f;
+    public float maxTranslationSpeed = 30f;
+
+    public float accelerationRate = 10f;
+    public float decelerationRate = 10f;
     public float maxDistance;
     private Transform myTransform;
     float zPosition;
@@ -90,7 +91,7 @@ public class MT : MonoBehaviour
         uiFeedbackTMP.text = factoryMachineID + ":" + dataFromOPCUANode;
         if (float.TryParse(dataFromOPCUANode, out float parsedData))
         {
-            fixedData = parsedData / 100f;
+            fixedData = parsedData / 100f * -1;
             UpdatePosition();
         }
         else
@@ -108,19 +109,15 @@ public class MT : MonoBehaviour
 
         else
         {
-            // 根据 fixedData 计算每个部件的位置
-            float normalizedPosition = Mathf.Clamp01(Mathf.Abs(fixedData) / maxLength);
 
-            // 更新部件A的位置（始终不变）
-            partA.localPosition = Vector3.zero;
 
             // 更新部件B的位置
             float lengthB = Mathf.Min(Mathf.Abs(fixedData), maxLength) * Mathf.Sign(fixedData);
             partB.localPosition = new Vector3(0, 0, lengthB);
 
             // 更新部件C的位置
-            float lengthC = Mathf.Max(Mathf.Abs(fixedData) - maxLength, 0) * Mathf.Sign(fixedData);
-            partC.localPosition = new Vector3(0, 0, lengthC);
+            float lengthC = Mathf.Clamp(Mathf.Max(Mathf.Abs(fixedData) - maxLength, 0), 0, maxLength) * Mathf.Sign(fixedData);
+            partC.localPosition = new Vector3(-0.636806f, 0, lengthC);
         }
     }
 
@@ -144,7 +141,7 @@ public class MT : MonoBehaviour
     //        partB.transform.Translate(Vector3.forward * currentTranslationSpeed * Time.deltaTime * -1);
 
     //        // 检查是否达到最大距离，如果达到，则立即停止
-    //        if (Mathf.Abs((partB.transform.position.z - initialPositionB.z)*-1) >= maxDistance)
+    //        if (Mathf.Abs((partB.transform.position.z - initialPositionB.z)*-1) >= maxLength)
     //        {
     //            currentTranslationSpeed = 0f;
     //            accelerationRate = 0f;
@@ -162,64 +159,64 @@ public class MT : MonoBehaviour
 
 }
 //----------------------------------------------------------
-    //void UpdateData()
-    //{
-    //    if (float.TryParse(dataFromOPCUANode, out float parsedData))
-    //    {
-    //        fixedData = parsedData / 100f;
-    //        UpdatePosition(fixedData);
-    //    }
-    //    else
-    //    {
-    //        //Debug.LogWarning("Failed to parse data from OPC UA node.");
-    //    }
-    //}
+//void UpdateData()
+//{
+//    if (float.TryParse(dataFromOPCUANode, out float parsedData))
+//    {
+//        fixedData = parsedData / 100f;
+//        UpdatePosition(fixedData);
+//    }
+//    else
+//    {
+//        //Debug.LogWarning("Failed to parse data from OPC UA node.");
+//    }
+//}
 
-    //public void UpdatePosition(float displacement)
-    //{
-    //    // 通过位移值更新B的位置
-    //    partB.localPosition = new Vector3(partB.localPosition.x, partB.localPosition.y, displacement);
+//public void UpdatePosition(float displacement)
+//{
+//    // 通过位移值更新B的位置
+//    partB.localPosition = new Vector3(partB.localPosition.x, partB.localPosition.y, displacement);
 
 
-    //    // 检查是否需要停止B的移动
-    //    if (!bStopped && Mathf.Abs(fixedData) >= stopThreshold)
-    //    {
-    //        // 如果B移动的距离超过阈值，停止B的移动
-    //        bStopped = true;
-    //        Debug.Log("B停止移动");
+//    // 检查是否需要停止B的移动
+//    if (!bStopped && Mathf.Abs(fixedData) >= stopThreshold)
+//    {
+//        // 如果B移动的距离超过阈值，停止B的移动
+//        bStopped = true;
+//        Debug.Log("B停止移动");
 
-    //        // 可以添加其他需要执行的逻辑
-    //        lastBPosition = partB.position;
-    //        // 启动C的移动
-    //        StartMovingPartC();
-    //    }
+//        // 可以添加其他需要执行的逻辑
+//        lastBPosition = partB.position;
+//        // 启动C的移动
+//        StartMovingPartC();
+//    }
 
-    //    // 如果B已经停止，移动C
-    //    if (bStopped)
-    //    {
-    //        MovePartC(displacement);
-    //        // 重置bStopped状态，使得B能够在fixedData再次小于5的时候继续移动
-    //        if (Mathf.Abs(fixedData) < stopThreshold)
-    //        {
-    //            bStopped = false;
-    //            Debug.Log("B继续移动");
-    //        }
-    //    }
-    //}
+//    // 如果B已经停止，移动C
+//    if (bStopped)
+//    {
+//        MovePartC(displacement);
+//        // 重置bStopped状态，使得B能够在fixedData再次小于5的时候继续移动
+//        if (Mathf.Abs(fixedData) < stopThreshold)
+//        {
+//            bStopped = false;
+//            Debug.Log("B继续移动");
+//        }
+//    }
+//}
 
-    //void StartMovingPartC()
-    //{
-    //    partB.localPosition = lastBPosition;
+//void StartMovingPartC()
+//{
+//    partB.localPosition = lastBPosition;
 
-    //    Debug.Log("C开始移动");
-    //}
+//    Debug.Log("C开始移动");
+//}
 
-    //void MovePartC(float displacement)
-    //{
-    //    // 通过位移值更新C的位置
-    //    partC.localPosition = new Vector3(partC.localPosition.x, partC.localPosition.y, displacement);
-    //    partB.position = lastBPosition;
-    //}
+//void MovePartC(float displacement)
+//{
+//    // 通过位移值更新C的位置
+//    partC.localPosition = new Vector3(partC.localPosition.x, partC.localPosition.y, displacement);
+//    partB.position = lastBPosition;
+//}
 
 
 
