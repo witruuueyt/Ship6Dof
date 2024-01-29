@@ -4,14 +4,14 @@ using TMPro;
 
 public class MS : MonoBehaviour
 {
-    public float maxRotationSpeed = 30f;
+    public float maxRotationSpeed = 10f;
     public float accelerationRate = 10f;
     public float decelerationRate = 10f;
     private float currentRotationSpeed = 0f;
     private Transform myTransform;
 
     float zRotation;
-
+    private string previousMoveData = "0";
 
     [Header("Factory Machine")]
     public string factoryMachineID;
@@ -74,7 +74,7 @@ public class MS : MonoBehaviour
     void Update()
     {
         Spin();
-        WriteValue();
+        //WriteValue();
         uiFeedbackTMP.text = factoryMachineID + ":" + dataFromOPCUANode;
         if (float.TryParse(dataFromOPCUANode, out float parsedData))
         {
@@ -96,48 +96,74 @@ public class MS : MonoBehaviour
 
         else
         {
-            // 获取当前物体的旋转
-            Quaternion currentRotation = transform.rotation;
+            Quaternion currentRotation = transform.localRotation;
 
-            // 使用Quaternion.Euler构建新的旋转
-            Quaternion newRotation = Quaternion.Euler(currentRotation.eulerAngles.x, 0f, angle);
+            // 使用Quaternion.Euler构建新的本地旋转
+            Quaternion newRotation = Quaternion.Euler(angle, currentRotation.eulerAngles.y, currentRotation.eulerAngles.z);
 
-            // 应用新的旋转
-            transform.rotation = newRotation;
+            // 应用新的本地旋转
+            transform.localRotation = newRotation;
         }
         
 
     }
 
-    public void WriteValue()
-    {
+    //public void WriteValue()
+    //{
 
-        zRotation = transform.eulerAngles.z;
+    //    zRotation = transform.eulerAngles.z;
 
-        Interface.WriteNodeValue(nodeID, zRotation);
-        //Debug.Log(nodeID + dataFromOPCUANode);
-    }
+    //    Interface.WriteNodeValue(nodeID, zRotation);
+    //    //Debug.Log(nodeID + dataFromOPCUANode);
+    //}
 
     public void Spin()
     {
-        //接收到的moveData数值为1时，开始旋转
+        // 初始化rotationDirection为默认值，例如Vector3.zero
+        Vector3 rotationDirection = Vector3.zero;
+        float targetRotationSpeed;
+
         if (moveData.Equals("1"))
         {
-            //加速度
-            currentRotationSpeed = Mathf.MoveTowards(currentRotationSpeed, maxRotationSpeed, accelerationRate * Time.deltaTime);
-
-            
-            transform.Rotate(Vector3.right, currentRotationSpeed * Time.deltaTime);
+            // 当moveData为"1"时，向前加速
+            rotationDirection = Vector3.right;
+            targetRotationSpeed = maxRotationSpeed;
+            previousMoveData = moveData;
 
         }
+        else if (moveData.Equals("2"))
+        {
+            // 当moveData为"2"时，向后加速
+            rotationDirection = Vector3.left;
+            targetRotationSpeed = maxRotationSpeed;
+            previousMoveData = moveData;
 
+        }
         else
         {
-            // 减速
-            currentRotationSpeed = Mathf.MoveTowards(currentRotationSpeed, 0f, decelerationRate * Time.deltaTime);
+            // 当moveData为其他值时，减速
+            targetRotationSpeed = 0f;
 
-            
-            transform.Rotate(Vector3.right, currentRotationSpeed * Time.deltaTime);
+            //Debug.Log(previousMoveData);
+            if (previousMoveData.Equals("1"))
+            {
+                rotationDirection = Vector3.right;
+
+            }
+
+            else if (previousMoveData.Equals("2"))
+            {
+                rotationDirection = Vector3.left;
+
+            }
+
         }
+
+        // 根据当前速度和目标速度计算新的旋转速度
+        currentRotationSpeed = Mathf.MoveTowards(currentRotationSpeed, targetRotationSpeed, accelerationRate * Time.deltaTime);
+
+        // 根据旋转方向和当前速度执行旋转
+        transform.Rotate(rotationDirection, currentRotationSpeed * Time.deltaTime);
+
     }
 }

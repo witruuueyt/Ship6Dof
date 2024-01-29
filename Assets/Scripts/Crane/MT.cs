@@ -12,7 +12,7 @@ public class MT : MonoBehaviour
 
     //public float stopThreshold = 5f;
 
-    public float maxTranslationSpeed = 30f;
+    public float maxTranslationSpeed = 10f;
 
     public float accelerationRate = 10f;
     public float decelerationRate = 10f;
@@ -121,13 +121,13 @@ public class MT : MonoBehaviour
         }
     }
 
-    public void WriteValue()
-    {
-        zPosition = transform.position.z * -1;
+    //public void WriteValue()
+    //{
+    //    zPosition = transform.position.z * -1;
 
-        Interface.WriteNodeValue(nodeID, zPosition);
-        //Debug.Log(nodeID + dataFromOPCUANode);
-    }
+    //    Interface.WriteNodeValue(nodeID, zPosition);
+    //    //Debug.Log(nodeID + dataFromOPCUANode);
+    //}
 
     //public void Move()
     //{

@@ -4,7 +4,7 @@ using TMPro;
 
 public class ML : MonoBehaviour
 {
-    public float maxRotationSpeed = 30f;
+    public float maxRotationSpeed = 10f;
     public float accelerationRate = 10f;
     public float decelerationRate = 10f;
     [SerializeField]
@@ -13,6 +13,7 @@ public class ML : MonoBehaviour
 
     float zRotation;
 
+    private string previousMoveData = "0"; // 将 previousMoveData 变量移动到类的范围内，以便在方法之间保持状态。
     //private float refreshInterval = 0.1f;
     //private float timeSinceLastRefresh = 0f;
     //Transform objectTransform;
@@ -23,7 +24,7 @@ public class ML : MonoBehaviour
 
 
     [Header("OPCUA Reader")]
-    public string nodeBeingMonitored;
+    public string nodeBeingMonitored;                                                                                                    
     public string nodeID;
 
     //public TMP_Text digitalTwinFeedbackTMP;
@@ -60,7 +61,7 @@ public class ML : MonoBehaviour
     {
         Debug.LogWarning("Factory Machine " + factoryMachineID + " has reconnected");
     }
-
+     
     public void NodeChanged(OPCUANodeSubscription sub, object value)
     {
         dataFromOPCUANode = value.ToString();
@@ -76,7 +77,7 @@ public class ML : MonoBehaviour
     void Update()
     {
         Spin();
-        WriteValue();
+        //WriteValue();
         uiFeedbackTMP.text = factoryMachineID + ":" + dataFromOPCUANode;
         if (float.TryParse(dataFromOPCUANode, out float parsedData))
         {
@@ -93,10 +94,11 @@ public class ML : MonoBehaviour
     }
     void RotateObjectOnZ(float angle)
     {
-        if (moveData.Equals("1"))
+        if (moveData.Equals("1") || moveData.Equals("2"))
         {
-
+            // 当moveData的值等于"1"或"2"时，执行这里的代码
         }
+       
         else
         {
 
@@ -111,35 +113,66 @@ public class ML : MonoBehaviour
         }
     }
 
-    public void WriteValue()
-    {
+    //public void WriteValue()
+    //{
 
-        zRotation = transform.eulerAngles.z;
+    //if (moveData.Equals("1"))
+    //{
 
-        Interface.WriteNodeValue(nodeID, zRotation);
-        //Debug.Log(nodeID + dataFromOPCUANode);
-    }
+    //    zRotation = transform.eulerAngles.z;
 
+    //    Interface.WriteNodeValue(nodeID, zRotation);
+    //    //Debug.Log(nodeID + dataFromOPCUANode);
+    ////}
+    //}
+    //    }
     public void Spin()
     {
-        //接收到的moveData数值为1时，开始旋转
+        // 初始化rotationDirection为默认值，例如Vector3.zero
+        Vector3 rotationDirection = Vector3.zero;
+        float targetRotationSpeed;
+
         if (moveData.Equals("1"))
         {
-            //加速度
-            currentRotationSpeed = Mathf.MoveTowards(currentRotationSpeed, maxRotationSpeed, accelerationRate * Time.deltaTime);
-
-
-            transform.Rotate(Vector3.forward, currentRotationSpeed * Time.deltaTime);
+            // 当moveData为"1"时，向前加速
+            rotationDirection = Vector3.forward;
+            targetRotationSpeed = maxRotationSpeed;
+            previousMoveData = moveData;
 
         }
+        else if (moveData.Equals("2"))
+        {
+            // 当moveData为"2"时，向后加速
+            rotationDirection = Vector3.back;
+            targetRotationSpeed = maxRotationSpeed;
+            previousMoveData = moveData;
 
+        }
         else
         {
-            // 减速
-            currentRotationSpeed = Mathf.MoveTowards(currentRotationSpeed, 0f, decelerationRate * Time.deltaTime);
+            // 当moveData为其他值时，减速
+            targetRotationSpeed = 0f;
 
+            //Debug.Log(previousMoveData);
+            if (previousMoveData.Equals("1"))
+            {
+                rotationDirection = Vector3.forward;
+               
+            }
 
-            transform.Rotate(Vector3.forward, currentRotationSpeed * Time.deltaTime);
+            else if (previousMoveData.Equals("2"))
+            {
+                rotationDirection = Vector3.back;
+              
+            }
+          
         }
+
+        // 根据当前速度和目标速度计算新的旋转速度
+        currentRotationSpeed = Mathf.MoveTowards(currentRotationSpeed, targetRotationSpeed, accelerationRate * Time.deltaTime);
+
+        // 根据旋转方向和当前速度执行旋转
+        transform.Rotate(rotationDirection, currentRotationSpeed * Time.deltaTime);
+
     }
 }

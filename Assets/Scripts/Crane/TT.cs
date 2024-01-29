@@ -8,7 +8,7 @@ public class TT : MonoBehaviour
     public TMP_Text uiFeedbackTMP;
 
 
-    public float maxTranslationSpeed = 30f;
+    public float maxTranslationSpeed = 10f;
 
     public float accelerationRate = 10f;
     public float decelerationRate = 10f;
@@ -18,6 +18,7 @@ public class TT : MonoBehaviour
     [SerializeField]
     private float currentTranslationSpeed = 0f;
     private Vector3 initialPositionB;
+    private string previousMoveData = "0";
 
     [Header("Factory Machine")]
     public string factoryMachineID;
@@ -78,7 +79,6 @@ public class TT : MonoBehaviour
     void Update()
     {
         Move();
-        WriteValue();
         uiFeedbackTMP.text = factoryMachineID + ":" + dataFromOPCUANode;
 
 
@@ -96,6 +96,7 @@ public class TT : MonoBehaviour
     {
         if (moveData.Equals("1"))
         {
+            //WriteValue();
 
         }
 
@@ -107,17 +108,62 @@ public class TT : MonoBehaviour
         }
     }
 
-    public void WriteValue()
-    {
-        zPosition = transform.position.z * -1;
+    //public void WriteValue()
+    //{
+    //    zPosition = transform.position.z * -1;
 
-        Interface.WriteNodeValue(nodeID, zPosition);
-        //Debug.Log(nodeID + dataFromOPCUANode);
-    }
+    //    Interface.WriteNodeValue(nodeID, zPosition);
+    //    //Debug.Log(nodeID + dataFromOPCUANode);
+    //}
 
     public void Move()
     {
-        
+        // 初始化rotationDirection为默认值，例如Vector3.zero
+        Vector3 translationDirection = Vector3.zero;
+        float targetTranslationSpeed;
+
+        if (moveData.Equals("1"))
+        {
+            // 当moveData为"1"时，向前加速
+            translationDirection = Vector3.forward;
+            targetTranslationSpeed = maxTranslationSpeed;
+            previousMoveData = moveData;
+
+        }
+        else if (moveData.Equals("2"))
+        {
+            // 当moveData为"2"时，向后加速
+            translationDirection = Vector3.back;
+            targetTranslationSpeed = maxTranslationSpeed;
+            previousMoveData = moveData;
+
+        }
+        else
+        {
+            // 当moveData为其他值时，减速
+            targetTranslationSpeed = 0f;
+
+            //Debug.Log(previousMoveData);
+            if (previousMoveData.Equals("1"))
+            {
+                translationDirection = Vector3.forward;
+
+            }
+
+            else if (previousMoveData.Equals("2"))
+            {
+                translationDirection = Vector3.back;
+
+            }
+
+        }
+
+        // 根据当前速度和目标速度计算新的旋转速度
+        currentTranslationSpeed = Mathf.MoveTowards(currentTranslationSpeed, targetTranslationSpeed, accelerationRate * Time.deltaTime);
+
+        // 根据旋转方向和当前速度执行旋转
+        transform.Translate(translationDirection * currentTranslationSpeed * Time.deltaTime);
+
     }
 }
 
