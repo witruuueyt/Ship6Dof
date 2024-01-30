@@ -134,44 +134,33 @@ public class ML : MonoBehaviour
 
         if (moveData.Equals("1"))
         {
-            // 当moveData为"1"时，向前加速
             rotationDirection = Vector3.forward;
             targetRotationSpeed = maxRotationSpeed;
             previousMoveData = moveData;
-
         }
         else if (moveData.Equals("2"))
         {
-            // 当moveData为"2"时，向后加速
             rotationDirection = Vector3.back;
             targetRotationSpeed = maxRotationSpeed;
             previousMoveData = moveData;
-
         }
         else
         {
-            // 当moveData为其他值时，减速
             targetRotationSpeed = 0f;
 
-            //Debug.Log(previousMoveData);
             if (previousMoveData.Equals("1"))
             {
-                rotationDirection = Vector3.forward;
-               
+                rotationDirection = Vector3.forward;   
             }
 
             else if (previousMoveData.Equals("2"))
             {
                 rotationDirection = Vector3.back;
-              
             }
-          
         }
 
-        // 根据当前速度和目标速度计算新的旋转速度
         currentRotationSpeed = Mathf.MoveTowards(currentRotationSpeed, targetRotationSpeed, accelerationRate * Time.deltaTime);
 
-        // 根据旋转方向和当前速度执行旋转
         transform.Rotate(rotationDirection, currentRotationSpeed * Time.deltaTime);
 
     }

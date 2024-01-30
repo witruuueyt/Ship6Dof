@@ -14,7 +14,7 @@ public class Ship6DoF : MonoBehaviour
     private string yRotation;
     private string zRotation;
 
-    public Transform msXRotation;
+    //public Transform msXRotation;
     //public TMP_Text text;
     //public TMP_Text text2;
     //public Transform targetObjectTransform;

@@ -97,7 +97,7 @@ public class TS : MonoBehaviour
     }
     void RotateObjectOnX(float angle)
     {
-        if (moveData.Equals("1"))
+        if (moveData.Equals("1") || moveData.Equals("2"))
         {
 
         }

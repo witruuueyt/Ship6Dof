@@ -102,7 +102,7 @@ public class MT : MonoBehaviour
     void UpdatePosition()
     {
 
-        if (moveData.Equals("1"))
+        if (moveData.Equals("1") || moveData.Equals("2"))
         {
 
         }
@@ -110,12 +110,9 @@ public class MT : MonoBehaviour
         else
         {
 
-
-            // 更新部件B的位置
             float lengthB = Mathf.Min(Mathf.Abs(fixedData), maxLength) * Mathf.Sign(fixedData);
             partB.localPosition = new Vector3(0, 0, lengthB);
 
-            // 更新部件C的位置
             float lengthC = Mathf.Clamp(Mathf.Max(Mathf.Abs(fixedData) - maxLength, 0), 0, maxLength) * Mathf.Sign(fixedData);
             partC.localPosition = new Vector3(-0.636806f, 0, lengthC);
         }

@@ -94,7 +94,7 @@ public class TT : MonoBehaviour
     }
     void UpdatePosition(float displacement)
     {
-        if (moveData.Equals("1"))
+        if (moveData.Equals("1") || moveData.Equals("2"))
         {
             //WriteValue();
 
@@ -118,13 +118,11 @@ public class TT : MonoBehaviour
 
     public void Move()
     {
-        // 初始化rotationDirection为默认值，例如Vector3.zero
         Vector3 translationDirection = Vector3.zero;
         float targetTranslationSpeed;
 
         if (moveData.Equals("1"))
         {
-            // 当moveData为"1"时，向前加速
             translationDirection = Vector3.forward;
             targetTranslationSpeed = maxTranslationSpeed;
             previousMoveData = moveData;
@@ -132,36 +130,26 @@ public class TT : MonoBehaviour
         }
         else if (moveData.Equals("2"))
         {
-            // 当moveData为"2"时，向后加速
             translationDirection = Vector3.back;
             targetTranslationSpeed = maxTranslationSpeed;
             previousMoveData = moveData;
-
         }
         else
         {
-            // 当moveData为其他值时，减速
             targetTranslationSpeed = 0f;
 
-            //Debug.Log(previousMoveData);
             if (previousMoveData.Equals("1"))
             {
                 translationDirection = Vector3.forward;
-
             }
 
             else if (previousMoveData.Equals("2"))
             {
                 translationDirection = Vector3.back;
-
             }
-
         }
-
-        // 根据当前速度和目标速度计算新的旋转速度
         currentTranslationSpeed = Mathf.MoveTowards(currentTranslationSpeed, targetTranslationSpeed, accelerationRate * Time.deltaTime);
 
-        // 根据旋转方向和当前速度执行旋转
         transform.Translate(translationDirection * currentTranslationSpeed * Time.deltaTime);
 
     }

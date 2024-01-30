@@ -89,7 +89,7 @@ public class TL : MonoBehaviour
     }
     void RotateObjectOnZ(float angle)
     {
-        if (moveData.Equals("1"))
+        if (moveData.Equals("1") || moveData.Equals("2"))
         {
 
         }
@@ -115,50 +115,39 @@ public class TL : MonoBehaviour
     //}
     public void Spin()
     {
-        // 初始化rotationDirection为默认值，例如Vector3.zero
         Vector3 rotationDirection = Vector3.zero;
         float targetRotationSpeed;
 
         if (moveData.Equals("1"))
         {
-            // 当moveData为"1"时，向前加速
             rotationDirection = Vector3.forward;
             targetRotationSpeed = maxRotationSpeed;
             previousMoveData = moveData;
-
         }
         else if (moveData.Equals("2"))
         {
-            // 当moveData为"2"时，向后加速
             rotationDirection = Vector3.back;
             targetRotationSpeed = maxRotationSpeed;
             previousMoveData = moveData;
-
         }
         else
         {
-            // 当moveData为其他值时，减速
             targetRotationSpeed = 0f;
 
-            //Debug.Log(previousMoveData);
             if (previousMoveData.Equals("1"))
             {
                 rotationDirection = Vector3.forward;
-
             }
 
             else if (previousMoveData.Equals("2"))
             {
                 rotationDirection = Vector3.back;
-
             }
 
         }
 
-        // 根据当前速度和目标速度计算新的旋转速度
         currentRotationSpeed = Mathf.MoveTowards(currentRotationSpeed, targetRotationSpeed, accelerationRate * Time.deltaTime);
 
-        // 根据旋转方向和当前速度执行旋转
         transform.Rotate(rotationDirection, currentRotationSpeed * Time.deltaTime);
 
     }
