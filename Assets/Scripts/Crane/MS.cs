@@ -96,16 +96,17 @@ public class MS : MonoBehaviour
 
         else
         {
-            Quaternion currentRotation = transform.localRotation;
+            transform.localRotation = Quaternion.Euler(angle, 0f, 0f);
+            //Quaternion currentRotation = transform.localRotation;
 
-            // 使用Quaternion.Euler构建新的本地旋转
-            Quaternion newRotation = Quaternion.Euler(angle, currentRotation.eulerAngles.y, currentRotation.eulerAngles.z);
+            //// 使用Quaternion.Euler构建新的本地旋转
+            //Quaternion newRotation = Quaternion.Euler(angle, currentRotation.eulerAngles.y, currentRotation.eulerAngles.z);
 
-            // 应用新的本地旋转
-            transform.localRotation = newRotation;
+            //// 应用新的本地旋转
+            //transform.localRotation = newRotation;
         }
-        
 
+       
     }
 
     //public void WriteValue()
@@ -122,14 +123,14 @@ public class MS : MonoBehaviour
         Vector3 rotationDirection = Vector3.zero;
         float targetRotationSpeed;
 
-        if (moveData.Equals("1") || Input.GetKey(KeyCode.LeftArrow))
+        if (moveData.Equals("1") || Input.GetKey(KeyCode.Q))
         {
             rotationDirection = Vector3.right;
             targetRotationSpeed = maxRotationSpeed;
             previousMoveData = "1";
 
         }
-        else if (moveData.Equals("2") || Input.GetKey(KeyCode.RightArrow))
+        else if (moveData.Equals("2") || Input.GetKey(KeyCode.W))
         {
             rotationDirection = Vector3.left;
             targetRotationSpeed = maxRotationSpeed;

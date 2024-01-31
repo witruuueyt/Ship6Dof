@@ -96,13 +96,16 @@ public class TL : MonoBehaviour
 
         else
         {
-            Quaternion currentRotation = transform.localRotation;
+            //Quaternion currentRotation = transform.localRotation;
 
-            // 使用Quaternion.Euler构建新的本地旋转
-            Quaternion newRotation = Quaternion.Euler(angle, currentRotation.eulerAngles.y, currentRotation.eulerAngles.z);
+            //// 使用Quaternion.Euler构建新的本地旋转
+            //Quaternion newRotation = Quaternion.Euler(angle, currentRotation.eulerAngles.y, currentRotation.eulerAngles.z);
 
-            // 应用新的本地旋转
-            transform.localRotation = newRotation;
+            //// 应用新的本地旋转
+            //transform.localRotation = newRotation;
+
+            transform.localRotation = Quaternion.Euler(angle, 0f, 0f);
+
         }
     }
 
@@ -118,15 +121,15 @@ public class TL : MonoBehaviour
         Vector3 rotationDirection = Vector3.zero;
         float targetRotationSpeed;
 
-        if (moveData.Equals("1"))
+        if (moveData.Equals("1") || Input.GetKey(KeyCode.E))
         {
-            rotationDirection = Vector3.forward;
+            rotationDirection = Vector3.right;
             targetRotationSpeed = maxRotationSpeed;
             previousMoveData = moveData;
         }
-        else if (moveData.Equals("2"))
+        else if (moveData.Equals("2") || Input.GetKey(KeyCode.R))
         {
-            rotationDirection = Vector3.back;
+            rotationDirection = Vector3.left;
             targetRotationSpeed = maxRotationSpeed;
             previousMoveData = moveData;
         }

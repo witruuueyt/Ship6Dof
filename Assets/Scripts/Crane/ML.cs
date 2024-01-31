@@ -81,7 +81,7 @@ public class ML : MonoBehaviour
         uiFeedbackTMP.text = factoryMachineID + ":" + dataFromOPCUANode;
         if (float.TryParse(dataFromOPCUANode, out float parsedData))
         {
-            angleInDegrees = (parsedData / 10f) - 90;
+            angleInDegrees = (parsedData / 10f);
 
             RotateObjectOnZ(angleInDegrees);
         }
@@ -101,15 +101,16 @@ public class ML : MonoBehaviour
        
         else
         {
+            transform.localRotation = Quaternion.Euler(0f, angle, 0f);
 
-            // 获取当前物体的欧拉角
-            Vector3 currentRotation = transform.eulerAngles;
+            //// 获取当前物体的欧拉角
+            //Vector3 currentRotation = transform.eulerAngles;
 
-            // 设置新的Z轴角度
-            currentRotation.z = angle;
+            //// 设置新的Z轴角度
+            //currentRotation.z = angle;
 
-            // 应用新的欧拉角，旋转物体
-            transform.eulerAngles = currentRotation;
+            //// 应用新的欧拉角，旋转物体
+            //transform.eulerAngles = currentRotation;
         }
     }
 
@@ -132,15 +133,15 @@ public class ML : MonoBehaviour
         Vector3 rotationDirection = Vector3.zero;
         float targetRotationSpeed;
 
-        if (moveData.Equals("1"))
+        if (moveData.Equals("1") || Input.GetKey(KeyCode.A))
         {
-            rotationDirection = Vector3.forward;
+            rotationDirection = Vector3.up;
             targetRotationSpeed = maxRotationSpeed;
             previousMoveData = moveData;
         }
-        else if (moveData.Equals("2"))
+        else if (moveData.Equals("2") || Input.GetKey(KeyCode.S))
         {
-            rotationDirection = Vector3.back;
+            rotationDirection = Vector3.down;
             targetRotationSpeed = maxRotationSpeed;
             previousMoveData = moveData;
         }

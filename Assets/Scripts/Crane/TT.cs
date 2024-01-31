@@ -121,14 +121,14 @@ public class TT : MonoBehaviour
         Vector3 translationDirection = Vector3.zero;
         float targetTranslationSpeed;
 
-        if (moveData.Equals("1"))
+        if (moveData.Equals("1") || Input.GetKey(KeyCode.D))
         {
             translationDirection = Vector3.forward;
             targetTranslationSpeed = maxTranslationSpeed;
             previousMoveData = moveData;
 
         }
-        else if (moveData.Equals("2"))
+        else if (moveData.Equals("2") || Input.GetKey(KeyCode.F))
         {
             translationDirection = Vector3.back;
             targetTranslationSpeed = maxTranslationSpeed;

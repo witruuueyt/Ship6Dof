@@ -104,13 +104,16 @@ public class TS : MonoBehaviour
 
         else
         {
-            Quaternion currentRotation = transform.localRotation;
+            //    Quaternion currentRotation = transform.localRotation;
 
-            // 使用Quaternion.Euler构建新的本地旋转
-            Quaternion newRotation = Quaternion.Euler(angle, currentRotation.eulerAngles.y, currentRotation.eulerAngles.z);
+            //    // 使用Quaternion.Euler构建新的本地旋转
+            //    Quaternion newRotation = Quaternion.Euler(angle, currentRotation.eulerAngles.y, currentRotation.eulerAngles.z);
 
-            // 应用新的本地旋转
-            transform.localRotation = newRotation;
+            //    // 应用新的本地旋转
+            //    transform.localRotation = newRotation;
+
+            transform.localRotation = Quaternion.Euler(50f, 90f, angle+90f);
+
         }
     }
 
@@ -124,11 +127,10 @@ public class TS : MonoBehaviour
 
     public void Spin()
     {
-        // 初始化rotationDirection为默认值，例如Vector3.zero
         Vector3 rotationDirection = Vector3.zero;
         float targetRotationSpeed;
 
-        if (moveData.Equals("1"))
+        if (moveData.Equals("1") || Input.GetKey(KeyCode.Z))
         {
             // 当moveData为"1"时，向前加速
             rotationDirection = Vector3.forward;
@@ -136,7 +138,7 @@ public class TS : MonoBehaviour
             previousMoveData = moveData;
 
         }
-        else if (moveData.Equals("2"))
+        else if (moveData.Equals("2") || Input.GetKey(KeyCode.X))
         {
             // 当moveData为"2"时，向后加速
             rotationDirection = Vector3.back;
