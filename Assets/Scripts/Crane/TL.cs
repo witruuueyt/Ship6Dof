@@ -125,13 +125,13 @@ public class TL : MonoBehaviour
         {
             rotationDirection = Vector3.right;
             targetRotationSpeed = maxRotationSpeed;
-            previousMoveData = moveData;
+            previousMoveData = "1";
         }
         else if (moveData.Equals("2") || Input.GetKey(KeyCode.R))
         {
             rotationDirection = Vector3.left;
             targetRotationSpeed = maxRotationSpeed;
-            previousMoveData = moveData;
+            previousMoveData = "2";
         }
         else
         {
@@ -139,12 +139,12 @@ public class TL : MonoBehaviour
 
             if (previousMoveData.Equals("1"))
             {
-                rotationDirection = Vector3.forward;
+                rotationDirection = Vector3.right;
             }
 
             else if (previousMoveData.Equals("2"))
             {
-                rotationDirection = Vector3.back;
+                rotationDirection = Vector3.left;
             }
 
         }

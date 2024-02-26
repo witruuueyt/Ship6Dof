@@ -129,7 +129,6 @@ public class ML : MonoBehaviour
     //    }
     public void Spin()
     {
-        // 初始化rotationDirection为默认值，例如Vector3.zero
         Vector3 rotationDirection = Vector3.zero;
         float targetRotationSpeed;
 
@@ -137,13 +136,13 @@ public class ML : MonoBehaviour
         {
             rotationDirection = Vector3.up;
             targetRotationSpeed = maxRotationSpeed;
-            previousMoveData = moveData;
+            previousMoveData = "1";
         }
         else if (moveData.Equals("2") || Input.GetKey(KeyCode.S))
         {
             rotationDirection = Vector3.down;
             targetRotationSpeed = maxRotationSpeed;
-            previousMoveData = moveData;
+            previousMoveData = "2";
         }
         else
         {
@@ -151,12 +150,12 @@ public class ML : MonoBehaviour
 
             if (previousMoveData.Equals("1"))
             {
-                rotationDirection = Vector3.forward;   
+                rotationDirection = Vector3.up;   
             }
 
             else if (previousMoveData.Equals("2"))
             {
-                rotationDirection = Vector3.back;
+                rotationDirection = Vector3.down;
             }
         }
 

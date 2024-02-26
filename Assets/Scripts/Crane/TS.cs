@@ -132,26 +132,22 @@ public class TS : MonoBehaviour
 
         if (moveData.Equals("1") || Input.GetKey(KeyCode.Z))
         {
-            // 当moveData为"1"时，向前加速
             rotationDirection = Vector3.forward;
             targetRotationSpeed = maxRotationSpeed;
-            previousMoveData = moveData;
+            previousMoveData = "1";
 
         }
         else if (moveData.Equals("2") || Input.GetKey(KeyCode.X))
         {
-            // 当moveData为"2"时，向后加速
             rotationDirection = Vector3.back;
             targetRotationSpeed = maxRotationSpeed;
-            previousMoveData = moveData;
+            previousMoveData = "2";
 
         }
         else
         {
-            // 当moveData为其他值时，减速
             targetRotationSpeed = 0f;
 
-            //Debug.Log(previousMoveData);
             if (previousMoveData.Equals("1"))
             {
                 rotationDirection = Vector3.forward;
@@ -166,10 +162,8 @@ public class TS : MonoBehaviour
 
         }
 
-        // 根据当前速度和目标速度计算新的旋转速度
         currentRotationSpeed = Mathf.MoveTowards(currentRotationSpeed, targetRotationSpeed, accelerationRate * Time.deltaTime);
 
-        // 根据旋转方向和当前速度执行旋转
         transform.Rotate(rotationDirection, currentRotationSpeed * Time.deltaTime);
 
     }
