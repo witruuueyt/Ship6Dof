@@ -7,7 +7,8 @@ public class TT : MonoBehaviour
     
     public TMP_Text uiFeedbackTMP;
 
-
+    public float minXPosition = -5.87f;
+    public float maxXPosition = -0.37f;
     public float maxTranslationSpeed = 10f;
 
     public float accelerationRate = 10f;
@@ -76,6 +77,22 @@ public class TT : MonoBehaviour
         Debug.Log("Factory machine " + factoryMachineID + " just registered " + nodeBeingMonitored + " as " + dataFromOPCUANode);
     }
 
+    public void MoveForward()
+    {
+        moveData = "1";
+    }
+
+
+    public void MoveBackward()
+    {
+        moveData = "2";
+    }
+
+
+    public void StopMovement()
+    {
+        moveData = "0";
+    }
     void Update()
     {
         Move();
@@ -108,31 +125,31 @@ public class TT : MonoBehaviour
         }
     }
 
-    //public void WriteValue()
-    //{
-    //    zPosition = transform.position.z * -1;
+    public void WriteValue()
+    {
+        zPosition = transform.position.z * -1;
 
-    //    Interface.WriteNodeValue(nodeID, zPosition);
-    //    //Debug.Log(nodeID + dataFromOPCUANode);
-    //}
+        Interface.WriteNodeValue(nodeID, zPosition);
+        //Debug.Log(nodeID + dataFromOPCUANode);
+    }
 
     public void Move()
     {
         Vector3 translationDirection = Vector3.zero;
         float targetTranslationSpeed;
 
-        if (moveData.Equals("1") || Input.GetKey(KeyCode.D))
+        // 根据移动数据确定移动方向和目标移动速度
+        if (moveData.Equals("1"))
         {
-            translationDirection = Vector3.forward;
+            translationDirection = Vector3.forward; //因为父级物体的角度以及自己的角度，反正是沿着x轴移动的
             targetTranslationSpeed = maxTranslationSpeed;
-            previousMoveData = moveData;
-
+            previousMoveData = "1";
         }
-        else if (moveData.Equals("2") || Input.GetKey(KeyCode.F))
+        else if (moveData.Equals("2"))
         {
-            translationDirection = Vector3.back;
+            translationDirection = Vector3.back; //因为父级物体的角度以及自己的角度，反正是沿着x轴移动的
             targetTranslationSpeed = maxTranslationSpeed;
-            previousMoveData = moveData;
+            previousMoveData = "2";
         }
         else
         {
@@ -142,16 +159,32 @@ public class TT : MonoBehaviour
             {
                 translationDirection = Vector3.forward;
             }
-
             else if (previousMoveData.Equals("2"))
             {
                 translationDirection = Vector3.back;
             }
         }
+
+        // 根据加速度调整当前移动速度
         currentTranslationSpeed = Mathf.MoveTowards(currentTranslationSpeed, targetTranslationSpeed, accelerationRate * Time.deltaTime);
 
+        // 根据当前移动速度和方向进行移动
         transform.Translate(translationDirection * currentTranslationSpeed * Time.deltaTime);
 
+        // 检查是否超出指定位置范围，如果是则停止移动并固定在范围边界上
+        float effectiveXPosition = transform.localPosition.x;
+        if (effectiveXPosition > maxXPosition)
+        {
+            transform.localPosition = new Vector3(maxXPosition, transform.localPosition.y, transform.localPosition.z);
+            currentTranslationSpeed = 0f;
+            moveData = "0";
+        }
+        else if (effectiveXPosition < minXPosition)
+        {
+            transform.localPosition = new Vector3(minXPosition, transform.localPosition.y, transform.localPosition.z);
+            currentTranslationSpeed = 0f;
+            moveData = "0";
+        }
     }
 }
 

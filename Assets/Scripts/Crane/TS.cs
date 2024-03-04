@@ -10,7 +10,7 @@ public class TS : MonoBehaviour
     public float decelerationRate = 10f;
 
     private Transform myTransform;
-    float xRotation;
+    float zRotation;
     private string previousMoveData = "0";
 
     [SerializeField]
@@ -79,26 +79,42 @@ public class TS : MonoBehaviour
         Debug.Log("Factory machine " + factoryMachineID + " just registered " + nodeBeingMonitored + " as " + dataFromOPCUANode);
     }
 
+
+    public void RotateRight()
+    {
+        moveData = "1";
+    }
+
+    public void RotateLeft()
+    {
+        moveData = "2";
+    }
+
+    public void StopRotation()
+    {
+        moveData = "0";
+    }
+
     void Update()
     {
         Spin();
-        //WriteValue();
         uiFeedbackTMP.text = factoryMachineID + ":" + dataFromOPCUANode;
         if (float.TryParse(dataFromOPCUANode, out float parsedData))
         {
             angleInDegrees = parsedData / 10f;
 
-            RotateObjectOnX(angleInDegrees);
+            RotateObjectOnZ(angleInDegrees);
         }
         else
         {
             //Debug.LogWarning("Failed to parse data from OPC UA node.");
         }
     }
-    void RotateObjectOnX(float angle)
+    void RotateObjectOnZ(float angle)
     {
         if (moveData.Equals("1") || moveData.Equals("2"))
         {
+            WriteValue();
 
         }
 
@@ -117,27 +133,28 @@ public class TS : MonoBehaviour
         }
     }
 
-    //public void WriteValue()
-    //{
-    //    xRotation = transform.eulerAngles.x;
+    public void WriteValue()
+    {
+        zRotation = transform.eulerAngles.z;
 
-    //    Interface.WriteNodeValue(nodeID, xRotation);
-    //    //Debug.Log(nodeID + dataFromOPCUANode);
-    //}
+        Interface.WriteNodeValue(nodeID, zRotation);
+        //Debug.Log(nodeID + dataFromOPCUANode);
+    }
 
     public void Spin()
     {
+
         Vector3 rotationDirection = Vector3.zero;
         float targetRotationSpeed;
 
-        if (moveData.Equals("1") || Input.GetKey(KeyCode.Z))
+        if (moveData.Equals("1"))
         {
             rotationDirection = Vector3.forward;
             targetRotationSpeed = maxRotationSpeed;
             previousMoveData = "1";
 
         }
-        else if (moveData.Equals("2") || Input.GetKey(KeyCode.X))
+        else if (moveData.Equals("2"))
         {
             rotationDirection = Vector3.back;
             targetRotationSpeed = maxRotationSpeed;
@@ -159,9 +176,7 @@ public class TS : MonoBehaviour
                 rotationDirection = Vector3.back;
 
             }
-
         }
-
         currentRotationSpeed = Mathf.MoveTowards(currentRotationSpeed, targetRotationSpeed, accelerationRate * Time.deltaTime);
 
         transform.Rotate(rotationDirection, currentRotationSpeed * Time.deltaTime);

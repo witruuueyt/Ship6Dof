@@ -11,7 +11,10 @@ public class ML : MonoBehaviour
     private float currentRotationSpeed = 0f;
     private Transform myTransform;
 
-    float zRotation;
+    float yRotation;
+    public float targetAngleMin = -30f;
+    public float targetAngleMax = 40f;
+    private bool shouldStop = false;
 
     private string previousMoveData = "0"; // 将 previousMoveData 变量移动到类的范围内，以便在方法之间保持状态。
     //private float refreshInterval = 0.1f;
@@ -74,16 +77,31 @@ public class ML : MonoBehaviour
         Debug.Log("Factory machine " + factoryMachineID + " just registered " + nodeBeingMonitored + " as " + dataFromOPCUANode);
     }
 
+
+    public void Rotate1()
+    {
+        moveData = "1";
+    }
+
+    public void Rotate2()
+    {
+        moveData = "2";
+    }
+
+    public void StopRotation()
+    {
+        moveData = "0";
+    }
+
     void Update()
     {
         Spin();
-        //WriteValue();
         uiFeedbackTMP.text = factoryMachineID + ":" + dataFromOPCUANode;
         if (float.TryParse(dataFromOPCUANode, out float parsedData))
         {
             angleInDegrees = (parsedData / 10f);
 
-            RotateObjectOnZ(angleInDegrees);
+            RotateObjectOnY(angleInDegrees);
         }
         else
         {
@@ -92,13 +110,14 @@ public class ML : MonoBehaviour
         
 
     }
-    void RotateObjectOnZ(float angle)
+    void RotateObjectOnY(float angle)
     {
         if (moveData.Equals("1") || moveData.Equals("2"))
         {
-            // 当moveData的值等于"1"或"2"时，执行这里的代码
+            WriteValue();
+
         }
-       
+
         else
         {
             transform.localRotation = Quaternion.Euler(0f, angle, 0f);
@@ -114,31 +133,31 @@ public class ML : MonoBehaviour
         }
     }
 
-    //public void WriteValue()
-    //{
+    public void WriteValue()
+    {
 
-    //if (moveData.Equals("1"))
-    //{
+        if (moveData.Equals("1") || moveData.Equals("2"))
+        {
 
-    //    zRotation = transform.eulerAngles.z;
+            yRotation = transform.eulerAngles.y;
 
-    //    Interface.WriteNodeValue(nodeID, zRotation);
-    //    //Debug.Log(nodeID + dataFromOPCUANode);
-    ////}
-    //}
-    //    }
+            Interface.WriteNodeValue(nodeID, yRotation);
+            //Debug.Log(nodeID + dataFromOPCUANode);
+            //}
+        }
+    }
     public void Spin()
     {
-        Vector3 rotationDirection = Vector3.zero;
-        float targetRotationSpeed;
+        Vector3 rotationDirection = Vector3.zero; // 旋转方向向量初始化为零向量
+        float targetRotationSpeed; // 目标旋转速度
 
-        if (moveData.Equals("1") || Input.GetKey(KeyCode.A))
+        if (moveData.Equals("1"))
         {
             rotationDirection = Vector3.up;
-            targetRotationSpeed = maxRotationSpeed;
+            targetRotationSpeed = maxRotationSpeed; // 设置目标旋转速度为最大旋转速度
             previousMoveData = "1";
         }
-        else if (moveData.Equals("2") || Input.GetKey(KeyCode.S))
+        else if (moveData.Equals("2"))
         {
             rotationDirection = Vector3.down;
             targetRotationSpeed = maxRotationSpeed;
@@ -146,22 +165,51 @@ public class ML : MonoBehaviour
         }
         else
         {
-            targetRotationSpeed = 0f;
+            targetRotationSpeed = 0f; // 没有移动数据时，目标旋转速度为零
 
+            // 根据previousMoveData确定旋转方向
             if (previousMoveData.Equals("1"))
             {
-                rotationDirection = Vector3.up;   
+                rotationDirection = Vector3.up;
             }
-
             else if (previousMoveData.Equals("2"))
             {
                 rotationDirection = Vector3.down;
             }
         }
 
+        // 根据加速度调整当前旋转速度
         currentRotationSpeed = Mathf.MoveTowards(currentRotationSpeed, targetRotationSpeed, accelerationRate * Time.deltaTime);
 
+        // 根据当前旋转速度和方向进行旋转
         transform.Rotate(rotationDirection, currentRotationSpeed * Time.deltaTime);
 
+        //Debug.LogWarning(GetEffectiveRotationX()); 
+
+        // 检查是否超出指定角度范围，如果是则停止旋转并固定在范围边界上
+        float effectiveRotationY = GetEffectiveRotationY();
+        if (effectiveRotationY > targetAngleMax)
+        {
+            transform.localEulerAngles = new Vector3(transform.localEulerAngles.x, targetAngleMax, transform.localEulerAngles.z);
+            currentRotationSpeed = 0f;
+            moveData = "0";
+        }
+        else if (effectiveRotationY < targetAngleMin)
+        {
+            transform.localEulerAngles = new Vector3(transform.localEulerAngles.x, targetAngleMin, transform.localEulerAngles.z);
+            currentRotationSpeed = 0f;
+            moveData = "0";
+        }
+
+        // 获取有效的 x 轴旋转角度方法
+        float GetEffectiveRotationY()
+        {
+            float effectiveRotation = transform.localEulerAngles.y; // 获取 x 轴旋转角度
+            if (transform.localRotation.eulerAngles.y > 180) // 如果角度大于180度
+            {
+                effectiveRotation -= 360; // 将大于180度的角度转换为负数
+            }
+            return effectiveRotation; // 返回有效的 x 轴旋转角度
+        }
     }
 }
