@@ -14,7 +14,6 @@ public class ML : MonoBehaviour
     float yRotation;
     public float targetAngleMin = -30f;
     public float targetAngleMax = 40f;
-    private bool shouldStop = false;
 
     private string previousMoveData = "0"; // 将 previousMoveData 变量移动到类的范围内，以便在方法之间保持状态。
     //private float refreshInterval = 0.1f;
@@ -90,7 +89,7 @@ public class ML : MonoBehaviour
 
     public void StopRotation()
     {
-        moveData = "0";
+        moveData = "3";
     }
 
     void Update()
@@ -112,7 +111,7 @@ public class ML : MonoBehaviour
     }
     void RotateObjectOnY(float angle)
     {
-        if (moveData.Equals("1") || moveData.Equals("2"))
+        if (moveData.Equals("1") || moveData.Equals("2") || moveData.Equals("3"))
         {
             WriteValue();
 
@@ -139,7 +138,7 @@ public class ML : MonoBehaviour
         if (moveData.Equals("1") || moveData.Equals("2"))
         {
 
-            yRotation = transform.eulerAngles.y;
+            yRotation = transform.eulerAngles.y * 10;
 
             Interface.WriteNodeValue(nodeID, yRotation);
             //Debug.Log(nodeID + dataFromOPCUANode);
@@ -192,24 +191,31 @@ public class ML : MonoBehaviour
         {
             transform.localEulerAngles = new Vector3(transform.localEulerAngles.x, targetAngleMax, transform.localEulerAngles.z);
             currentRotationSpeed = 0f;
-            moveData = "0";
+            moveData = "3";
         }
         else if (effectiveRotationY < targetAngleMin)
         {
             transform.localEulerAngles = new Vector3(transform.localEulerAngles.x, targetAngleMin, transform.localEulerAngles.z);
             currentRotationSpeed = 0f;
-            moveData = "0";
+            moveData = "3";
         }
 
-        // 获取有效的 x 轴旋转角度方法
-        float GetEffectiveRotationY()
+       
+
+        if (currentRotationSpeed == 0f)
         {
-            float effectiveRotation = transform.localEulerAngles.y; // 获取 x 轴旋转角度
-            if (transform.localRotation.eulerAngles.y > 180) // 如果角度大于180度
-            {
-                effectiveRotation -= 360; // 将大于180度的角度转换为负数
-            }
-            return effectiveRotation; // 返回有效的 x 轴旋转角度
+            moveData = "0";
         }
+    }
+
+    // 获取有效的 x 轴旋转角度方法
+    float GetEffectiveRotationY()
+    {
+        float effectiveRotation = transform.localEulerAngles.y; // 获取 y 轴旋转角度
+        if (transform.localRotation.eulerAngles.y > 180) // 如果角度大于180度
+        {
+            effectiveRotation -= 360; // 将大于180度的角度转换为负数
+        }
+        return effectiveRotation; // 返回有效的 x 轴旋转角度
     }
 }

@@ -92,7 +92,7 @@ public class TS : MonoBehaviour
 
     public void StopRotation()
     {
-        moveData = "0";
+        moveData = "3";
     }
 
     void Update()
@@ -104,30 +104,24 @@ public class TS : MonoBehaviour
             angleInDegrees = parsedData / 10f;
 
             RotateObjectOnZ(angleInDegrees);
+
         }
         else
         {
             //Debug.LogWarning("Failed to parse data from OPC UA node.");
         }
+        
     }
     void RotateObjectOnZ(float angle)
     {
-        if (moveData.Equals("1") || moveData.Equals("2"))
+        if (moveData.Equals("1") || moveData.Equals("2") || moveData.Equals("3"))
         {
             WriteValue();
 
         }
 
-        else
+        else if (moveData.Equals("0"))
         {
-            //    Quaternion currentRotation = transform.localRotation;
-
-            //    // 使用Quaternion.Euler构建新的本地旋转
-            //    Quaternion newRotation = Quaternion.Euler(angle, currentRotation.eulerAngles.y, currentRotation.eulerAngles.z);
-
-            //    // 应用新的本地旋转
-            //    transform.localRotation = newRotation;
-
             transform.localRotation = Quaternion.Euler(50f, 90f, angle+90f);
 
         }
@@ -136,9 +130,9 @@ public class TS : MonoBehaviour
     public void WriteValue()
     {
         zRotation = transform.eulerAngles.z;
-
+        zRotation = (zRotation - 90f) * 10;
+        Debug.LogWarning(zRotation);
         Interface.WriteNodeValue(nodeID, zRotation);
-        //Debug.Log(nodeID + dataFromOPCUANode);
     }
 
     public void Spin()
@@ -181,6 +175,10 @@ public class TS : MonoBehaviour
 
         transform.Rotate(rotationDirection, currentRotationSpeed * Time.deltaTime);
 
+        if (currentRotationSpeed == 0f)
+        {
+            moveData = "0";
+        }
     }
 }
 

@@ -83,7 +83,7 @@ public class TL : MonoBehaviour
 
     public void StopRotation()
     {
-        moveData = "0";
+        moveData = "3";
     }
 
     void Update()
@@ -103,7 +103,7 @@ public class TL : MonoBehaviour
     }
     void RotateObjectOnX(float angle)
     {
-        if (moveData.Equals("1") || moveData.Equals("2"))
+        if (moveData.Equals("1") || moveData.Equals("2") || moveData.Equals("3"))
         {
             WriteValue();
 
@@ -126,7 +126,7 @@ public class TL : MonoBehaviour
 
     public void WriteValue()
     {
-        xRotation = transform.eulerAngles.x;
+        xRotation = transform.eulerAngles.x * 10;
 
         Interface.WriteNodeValue(nodeID, xRotation);
         //Debug.Log(nodeID + dataFromOPCUANode);
@@ -178,12 +178,17 @@ public class TL : MonoBehaviour
         {
             transform.localEulerAngles = new Vector3(targetAngleMax, transform.localEulerAngles.y, transform.localEulerAngles.z);
             currentRotationSpeed = 0f;
-            moveData = "0";
+            moveData = "3";
         }
         else if (effectiveRotationX < targetAngleMin)
         {
             transform.localEulerAngles = new Vector3(targetAngleMin, transform.localEulerAngles.y, transform.localEulerAngles.z);
             currentRotationSpeed = 0f;
+            moveData = "3";
+        }
+
+        if (currentRotationSpeed == 0f)
+        {
             moveData = "0";
         }
     }

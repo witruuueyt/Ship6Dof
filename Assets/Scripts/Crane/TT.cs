@@ -91,7 +91,7 @@ public class TT : MonoBehaviour
 
     public void StopMovement()
     {
-        moveData = "0";
+        moveData = "3";
     }
     void Update()
     {
@@ -111,7 +111,7 @@ public class TT : MonoBehaviour
     }
     void UpdatePosition(float displacement)
     {
-        if (moveData.Equals("1") || moveData.Equals("2"))
+        if (moveData.Equals("1") || moveData.Equals("2") || moveData.Equals("3"))
         {
             //WriteValue();
 
@@ -183,6 +183,11 @@ public class TT : MonoBehaviour
         {
             transform.localPosition = new Vector3(minXPosition, transform.localPosition.y, transform.localPosition.z);
             currentTranslationSpeed = 0f;
+            moveData = "0";
+        }
+
+        if (currentTranslationSpeed == 0f)
+        {
             moveData = "0";
         }
     }

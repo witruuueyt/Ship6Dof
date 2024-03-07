@@ -83,7 +83,7 @@ public class MS : MonoBehaviour
 
     public void StopRotation()
     {
-        moveData = "0";
+        moveData = "3";
     }
 
     void Update()
@@ -98,12 +98,12 @@ public class MS : MonoBehaviour
         }
         else
         {
-            //Debug.LogWarning("Failed to parse data from OPC UA node.");
+
         }
     }
     void RotateObjectOnX(float angle)
     {
-        if (moveData.Equals("1") || moveData.Equals("2"))
+        if (moveData.Equals("1") || moveData.Equals("2") || moveData.Equals("3"))
         {
             WriteValue();
 
@@ -112,16 +112,7 @@ public class MS : MonoBehaviour
         else
         {
             transform.localRotation = Quaternion.Euler(angle, 0f, 0f);
-            //Quaternion currentRotation = transform.localRotation;
-
-            //// 使用Quaternion.Euler构建新的本地旋转
-            //Quaternion newRotation = Quaternion.Euler(angle, currentRotation.eulerAngles.y, currentRotation.eulerAngles.z);
-
-            //// 应用新的本地旋转
-            //transform.localRotation = newRotation;
         }
-
-       
     }
 
     public void WriteValue()
@@ -136,7 +127,7 @@ public class MS : MonoBehaviour
             }
             return effectiveRotation; // 返回有效的 x 轴旋转角度
         }
-        Interface.WriteNodeValue(nodeID, GetEffectiveRotationX());
+        Interface.WriteNodeValue(nodeID, GetEffectiveRotationX() * 10);
         Debug.Log(GetEffectiveRotationX() + dataFromOPCUANode);
     }
 
@@ -179,42 +170,10 @@ public class MS : MonoBehaviour
         currentRotationSpeed = Mathf.MoveTowards(currentRotationSpeed, targetRotationSpeed, accelerationRate * Time.deltaTime);
 
         transform.Rotate(rotationDirection, currentRotationSpeed * Time.deltaTime);
-        //Vector3 rotationDirection = Vector3.zero;
-        //float targetRotationSpeed;
 
-        //if (moveData.Equals("1") || Input.GetKey(KeyCode.Q))
-        //{
-        //    rotationDirection = Vector3.right;
-        //    targetRotationSpeed = maxRotationSpeed;
-        //    previousMoveData = "1";
-
-        //}
-        //else if (moveData.Equals("2") || Input.GetKey(KeyCode.W))
-        //{
-        //    rotationDirection = Vector3.left;
-        //    targetRotationSpeed = maxRotationSpeed;
-        //    previousMoveData = "2";
-
-        //}
-        //else
-        //{
-        //    targetRotationSpeed = 0f;
-
-        //    if (previousMoveData.Equals("1"))
-        //    {
-        //        rotationDirection = Vector3.right;
-        //    }
-
-        //    else if (previousMoveData.Equals("2"))
-        //    {
-        //        rotationDirection = Vector3.left;
-        //    }
-
-        //}
-
-        //currentRotationSpeed = Mathf.MoveTowards(currentRotationSpeed, targetRotationSpeed, accelerationRate * Time.deltaTime);
-
-        //transform.Rotate(rotationDirection, currentRotationSpeed * Time.deltaTime);
-
+        if (currentRotationSpeed == 0f)
+        {
+            moveData = "0";
+        }
     }
 }
